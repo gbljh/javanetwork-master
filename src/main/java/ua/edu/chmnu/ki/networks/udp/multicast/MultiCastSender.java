@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,8 +16,10 @@ public class MultiCastSender implements Runnable {
     private boolean active = true;
     private final MulticastSocket socket;
     private MultiCastDataAction action;
+    private int delay;
 
-    public MultiCastSender(String group, int groupPort) throws IOException {
+    public MultiCastSender(int delay, String group, int groupPort) throws IOException {
+        this.delay = delay;
         this.group = group;
         this.groupPort = groupPort;
         this.socket = new MulticastSocket();
@@ -47,11 +50,12 @@ public class MultiCastSender implements Runnable {
                 while (this.action != null && isActive()) {
                     byte[] data = action.getBytes();
                     DatagramPacket packet = 
-                            new DatagramPacket(data, data.length, 
+                            new DatagramPacket(data, data.length,
                                                address, this.groupPort);
                     sender.send(packet);
                     System.out.println("Sent: " + new String(data));
-                    Thread.sleep(100);
+                    Date date = new Date();
+                    Thread.sleep((new Double(Math.abs(Math.ceil(date.getTime()/(delay*1000))*(delay*1000)-date.getTime())).longValue()));
                 }
             } catch (IOException ex) {
                 if (this.socket.isClosed())
