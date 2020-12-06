@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
 public class SimplePing {
+
 
     public static void main(String[] args) throws UnknownHostException, IOException {
         String host = args.length >= 1 ? args[0] : "localhost";
